@@ -11,7 +11,8 @@
 		"start": "node server.js",
 		"dev": "nodemon server.js"
 	},
-	"author": "Akash Deep",
+	"author": "vaishu",
+	"type": "module",
 	"license": "ISC",
 	"dependencies": {
 		"bcryptjs": "^2.4.3",
