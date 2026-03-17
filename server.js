@@ -3,6 +3,7 @@ dotenv.config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const { Server } = require("socket.io");
 
 const app = express();
 
@@ -63,11 +64,14 @@ const server = app.listen(PORT, async () => {
 });
 
 // Socket.IO setup
-const { Server } = require("socket.io");
 const io = new Server(server, {
-	pingTimeout: 60000,
-	transports: ["websocket"],
-	cors: corsOptions,
+  pingTimeout: 60000,
+  transports: ["websocket"],
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+    credentials: true
+  },
 });
 
 // Socket connection
