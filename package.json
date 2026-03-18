@@ -12,7 +12,7 @@
 		"dev": "nodemon server.js"
 	},
 	"author": "vaishu",
-	"type": "module",
+	"type": "commonjs",
 	"license": "ISC",
 	"dependencies": {
 		"bcryptjs": "^2.4.3",
