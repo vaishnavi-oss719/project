@@ -56,6 +56,7 @@ const createMessage = async (req, res) => {
       sender: req.user._id,
       message,
       chat: chatId,
+      file: req.file ? req.file.filename : null,
     });
 
     await Chat.findByIdAndUpdate(chatId, {

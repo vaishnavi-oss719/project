@@ -342,7 +342,7 @@ app.use(cors(corsOptions));
 app.options("*", cors(corsOptions)); // preflight
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use("/uploads", express.static("uploads"));
 const PORT = process.env.PORT || 3000;
 
 // Routers

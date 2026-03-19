@@ -17,6 +17,9 @@ const messageSchema = mongoose.Schema(
 			ref: "Chat",
 			required: true,
 		},
+		file: {
+            type: String,
+},
 	},
 	{
 		timestamps: true,
