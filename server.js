@@ -318,14 +318,28 @@ const { Server } = require("socket.io");
 
 const app = express();
 
+// const corsOptions = {
+//   origin: process.env.FRONTEND_URL || "*", // allow your frontend
+//   methods: ["GET", "POST", "DELETE", "PUT"],
+//   allowedHeaders: ["Content-Type", "Authorization"],
+//   credentials: true,
+// };
+
+// app.use(cors(corsOptions));
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
+
+
+
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || "*", // allow your frontend
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
   methods: ["GET", "POST", "DELETE", "PUT"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };
 
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // preflight
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -398,16 +412,36 @@ io.on("connection", (socket) => {
   });
 
   // New message
+  // socket.on("new message", (newMessage) => {
+  //   const chat = newMessage.chat;
+  //   chat.users.forEach((user) => {
+  //     if (user._id === newMessage.sender._id) return; // don't send to sender
+  //     const socketId = onlineUsers.get(user._id);
+  //     if (socketId) {
+  //       io.to(socketId).emit("message received", newMessage);
+  //     }
+  //   });
+  // });
+
+
   socket.on("new message", (newMessage) => {
+  const receiverId = newMessage.receiver?._id || null;
+
+  if (receiverId) {
+    const socketId = onlineUsers.get(receiverId);
+    if (socketId) {
+      io.to(socketId).emit("message received", newMessage);
+    }
+  } else {
+    // fallback: send to all users except sender
     const chat = newMessage.chat;
     chat.users.forEach((user) => {
-      if (user._id === newMessage.sender._id) return; // don't send to sender
+      if (user._id === newMessage.sender._id) return;
       const socketId = onlineUsers.get(user._id);
-      if (socketId) {
-        io.to(socketId).emit("message received", newMessage);
-      }
+      if (socketId) io.to(socketId).emit("message received", newMessage);
     });
-  });
+  }
+});
 
   // Join chat room (for typing etc)
   socket.on("join chat", (room) => {
