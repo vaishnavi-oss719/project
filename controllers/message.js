@@ -45,25 +45,23 @@ const Chat = require("../models/chat");
 const Message = require("../models/message");
 
 const createMessage = async (req, res) => {
-  const { message, chatId, receiverId } = req.body;
+  const { message, chatId } = req.body;
 
-  if (!message || !chatId || !receiverId) {
+  if (!message || !chatId) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
   try {
-    // create new message
- const newMessage = await Message.create({
-  sender: req.user._id,
-  message: message,
-  chat: chatId,
-  receiver: receiverId, // 👈 important
-});
+    const newMessage = await Message.create({
+      sender: req.user._id,
+      message,
+      chat: chatId,
+    });
 
-    // update latest message in chat
-    await Chat.findByIdAndUpdate(chatId, { latestMessage: newMessage._id });
+    await Chat.findByIdAndUpdate(chatId, {
+      latestMessage: newMessage._id,
+    });
 
-    // populate sender & chat users
     const fullMessage = await Message.findById(newMessage._id)
       .populate("sender", "-password")
       .populate({
@@ -73,11 +71,10 @@ const createMessage = async (req, res) => {
 
     return res.status(201).json({ data: fullMessage });
   } catch (err) {
-    console.error(err);
+    console.log(err);
     return res.status(500).json({ message: "Server error" });
   }
 };
-
 const allMessage = async (req, res) => {
   const chatId = req.params.chatId;
   try {
