@@ -112,7 +112,7 @@ const Message = require("../models/message");
   console.log("BODY:", req.body);
   console.log("FILE:", req.file);
 
-  // ✅ FIX: allow file மட்டும் இருந்தாலும் ok
+  
   if ((!message || message.trim() === "") && !req.file) {
     return res.status(400).json({ message: "Message or file required" });
   }
