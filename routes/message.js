@@ -34,12 +34,8 @@ router.post(
   wrapAsync(messageController.createMessage)
 );
 
-// ✅ NORMAL SEND MESSAGE (optional - remove if duplicate)
-router.post(
-  "/",
-  authorization,
-  wrapAsync(messageController.createMessage)
-);
+
+
 
 // ✅ GET ALL MESSAGES
 router.get(
